@@ -1,6 +1,11 @@
 const socket = io()
 let user;
-const chatBox = document.getElementById("chatBox")
+const chats = document.getElementById("chats")
+function entrarAlChat(chatId) {
+    const body = document.querySelector("body")
+    body.removeChild(chats)
+    socket.emit("chat",chatId)
+}
 Swal.fire({
     icon: "info",
     title: "Identificate",
@@ -8,7 +13,7 @@ Swal.fire({
     text:"Ingrese el userName para identificarse en el chat",
     inputValidator: (value)=> {
         if(!value) {
-            return "Necestias escribir tu Nombre"
+            return "Necestias escribir tu Id"
         } else {
             socket.emit("userConnected",{user:user})
         }
@@ -16,46 +21,22 @@ Swal.fire({
     allowOutsideClick: false
 }).then(result =>{
     user = result.value
-    const userName = document.getElementById("myName")
-    userName.innerHTML = user
     socket.emit("userConnected",{user:user})
 })
-
-chatBox.addEventListener("keyup",(evt)=>{
-    if(evt.key === "Enter") {
-        if(chatBox.value.trim().length > 0) {
-            socket.emit("message",{user: user, msg: chatBox.value})
-            chatBox.value = ""
-        }
+socket.on("chats",data=> {
+    const chatsFragment = document.createDocumentFragment()
+    for (let i = 0; i<data.length;i++) {
+        const chat = document.createElement("div")
+        chat.classList.add("chat")
+        chat.innerHTML = `<img src="${data[i].img}">
+        <h2>${data[i].name}</h2>`
+        chatsFragment.appendChild(chat)
+        chat.addEventListener("click", function(){
+            entrarAlChat(data[i].chatID)
+        })
     }
+    chats.appendChild(chatsFragment)
 })
-
-socket.on("messageLogs",data=> {
-    const messageLog = document.getElementById("messageLogs")
-    let logs =""
-    data.forEach(log => {
-        logs += `${log.user}: ${log.msg}<br/>`
-    });
-    messageLog.innerHTML = logs
-})
-socket.on("userConnected",data=> {
-    let message = `Nuevo usuario conectado: ${data.data.user}`
-    Swal.fire({
-        icon:"info",
-        title:"Nuevo usuario entra al chat",
-        text: message,
-        toast: true
-    })
-    const messageLog = document.getElementById("messageLogs")
-    let logs =""
-    data.msg.forEach(log => {
-        logs += `${log.user}: ${log.msg}<br/>`
-    });
-    messageLog.innerHTML = logs
-})
-const closeChatBox = document.getElementById("closeChatBox")
-closeChatBox.addEventListener("click",evt=> {
-    const messageLog = document.getElementById("messageLogs")
-    socket.emit("closeChat",{close:"close"})
-    messageLog.innerHTML = ""
+socket.on("chat",data=> {
+    console.log(data)
 })

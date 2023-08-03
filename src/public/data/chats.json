@@ -1,0 +1,16 @@
+[
+    {
+        "chatID" : 0,
+        "chatUsers" : [0,1],
+        "messages" : [{"userId" : 0, "msg": "Como andan?"}]
+    },
+    {
+        "chatID" : 1,
+        "chatUsers" : [0,2],
+        "messages" : [{"userId" : 0, "msg": "Como andan?"},{"userId" : 1, "msg" : "Todo bien"}]
+    },{
+        "chatID" : 2,
+        "chatUsers" : [0,3],
+        "messages" : [{"userId" : 0, "msg": "Como andan?"},{"userId" : 1, "msg" : "Todo bien"}]
+    }
+]
