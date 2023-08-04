@@ -39,4 +39,5 @@ socket.on("chats",data=> {
 })
 socket.on("chat",data=> {
     console.log(data)
+    window.location.href = data
 })

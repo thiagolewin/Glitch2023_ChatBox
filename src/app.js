@@ -59,7 +59,7 @@ socketServer.on("connection",socket=> {
         if (chatId == -1) {
 
         } else {
-            socket.emit("chat",chats[chatId])
+            socket.emit("chat", "http://localhost:8080/message/chat/?chatId=" + chatId)
         }
     })
     socket.on("message",data=>{
